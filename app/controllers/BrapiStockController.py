@@ -2,6 +2,11 @@ import datetime
 import requests
 
 class BrapiStockController:
+    def get_stocks(self) -> dict:
+        url = "https://brapi.dev/api/available"
+        response = requests.get(url)
+        return response.json()
+
     def get_stock_info(self, ticker: str) -> dict:
         url = f"https://brapi.dev/api/quote/{ticker}?token=9D5sERcAW7br6f6eKbUnhL"
         params = {
