@@ -12,8 +12,8 @@ RUN pip install -r requirements.txt
 # Copie o restante da aplicação
 COPY . .
 
-# Exponha a porta 8000
+# Exponha a porta 8080
 EXPOSE 8080
 
 # Comando para iniciar a aplicação
-CMD ["python", "main.py"]
+CMD ["uvicorn", "app.api:app", "--host", "0.0.0.0", "--port", "8080", "--reload", "--proxy-headers"]
