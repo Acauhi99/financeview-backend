@@ -46,7 +46,3 @@ def get_stocks(db: Session = Depends(get_db)):
 @app.get("/stocks/{ticker}", tags=["stocks"])
 def get_stock_info(ticker: str):
     return BrapiStockController().get_stock_info(ticker)
-
-@app.get("/healthcheck", tags=["healthcheck"])
-async def health():
-    return {"status": "ok"}
