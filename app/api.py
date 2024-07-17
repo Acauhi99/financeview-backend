@@ -1,4 +1,5 @@
 from fastapi import FastAPI, Depends
+from fastapi.responses import JSONResponse
 from sqlalchemy.orm import Session
 from contextlib import asynccontextmanager
 from fastapi.middleware.cors import CORSMiddleware
@@ -48,5 +49,5 @@ def get_stock_info(ticker: str):
     return BrapiStockController().get_stock_info(ticker)
 
 @app.get("/health", tags=["health"])
-async def health_check():
-    return {"status": "ok"}
+def health_check():
+    return JSONResponse(status_code=200, content={"status": "ok"})
