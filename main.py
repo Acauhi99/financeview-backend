@@ -14,8 +14,12 @@ from app.sql.crud import Crud
 scheduler = BackgroundScheduler()
 
 origins = [
+    "https://localhost:3000",
     "http://localhost:3000",
-    "localhost:3000",
+    "https://localhost:8000",
+    "http://localhost:8000",
+    "https://localhost:80",
+    "http://localhost:80"
 ]
 
 scheduler.add_job(ActiveStocksCronJob.get_updated_stocks, 'interval', minutes=43200)
