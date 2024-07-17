@@ -1,5 +1,5 @@
 # Use uma imagem base Python
-FROM python:3.8-slim
+FROM python:3.11
 
 # Defina o diretório de trabalho
 WORKDIR /app
@@ -7,7 +7,7 @@ WORKDIR /app
 # Copie o arquivo de requisitos e instale as dependências
 COPY requirements.txt .
 
-RUN pip install --no-cache-dir -r requirements.txt
+RUN pip install -r requirements.txt
 
 # Copie o restante da aplicação
 COPY . .
