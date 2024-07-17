@@ -13,7 +13,7 @@ RUN pip install -r requirements.txt
 COPY . .
 
 # Exponha a porta 8000
-EXPOSE 8000
+EXPOSE 8080
 
 # Comando para iniciar a aplicação
 CMD ["python", "main.py"]
