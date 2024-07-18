@@ -1,5 +1,5 @@
 from sqlalchemy.orm import Session
-from sqlalchemy.exc import IntegrityError
+from sqlalchemy.exc import IntegrityError, OperationalError
 from app.sql.models import User
 from app.sql.schemas import UserCreate
 from passlib.context import CryptContext
@@ -21,6 +21,11 @@ class UserUseCase:
         try:
             self.db.add(user_model)
             self.db.commit()
+        except OperationalError:
+            raise HTTPException(
+                status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+                detail='Database table not found'
+            )
         except IntegrityError:
             raise HTTPException(
                 status_code=status.HTTP_409_CONFLICT,

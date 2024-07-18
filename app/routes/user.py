@@ -12,5 +12,5 @@ def user_register(user: UserCreate ,db: Session = Depends(get_db)):
     UserUseCase(db).create(user)
     return JSONResponse(
         status_code=status.HTTP_201_CREATED,
-        content='User created'
+        content={"message": "User created"}
     )
