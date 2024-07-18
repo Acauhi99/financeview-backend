@@ -1,17 +1,16 @@
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
-from app.sql import models
+from app.sql.base import Base
 
-engine = create_engine(
-    "sqlite:///./sql.db", connect_args={"check_same_thread": False}
-)
 
+SQLALCHEMY_DATABASE_URL = "sqlite:///./test.db"
+engine = create_engine(SQLALCHEMY_DATABASE_URL)
 SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
-models.Base.metadata.create_all(bind=engine)
+Base.metadata.create_all(bind=engine)
 
 def get_db():
-    db = SessionLocal()
     try:
+        db = SessionLocal()
         yield db
     finally:
         db.close()

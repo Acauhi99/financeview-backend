@@ -1,14 +1,10 @@
-from fastapi import FastAPI, Depends
-from sqlalchemy.orm import Session
+from fastapi import FastAPI
 from contextlib import asynccontextmanager
 from fastapi.middleware.cors import CORSMiddleware
-
+from app.routes.stock import router as stock_router
+from app.routes.user import router as user_router
 from apscheduler.schedulers.background import BackgroundScheduler
-from app.controllers.BrapiStockController import BrapiStockController
 from app.crons.ActiveStocksCronJob import ActiveStocksCronJob
-
-from app.sql.database import get_db
-from app.sql.crud import Crud
 
 scheduler = BackgroundScheduler()
 
@@ -43,14 +39,9 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-@app.get("/stocks", tags=["stocks"])
-def get_stocks(db: Session = Depends(get_db)):
-    return Crud(db).get_all_ative_stocks()
+@app.get("/")
+def root():
+    return {"message": "FinanceView API"}
 
-@app.get("/stocks/{ticker}", tags=["stocks"])
-def get_stock_info(ticker: str):
-    return BrapiStockController().get_stock_info(ticker)
-
-@app.get('/')
-async def root():
-    return {'message': 'Hello World'}
+app.include_router(stock_router)
+app.include_router(user_router)

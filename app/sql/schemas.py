@@ -1,24 +1,20 @@
-from pydantic import BaseModel
+import re
+from pydantic import BaseModel, field_validator
 
+class UserCreate(BaseModel):
+    name: str
+    email: str
+    password: str
 
-# class Stock(BaseModel):
-#     id: int
-#     ticker: str
-#     name: str
-#     owner_id: int
-
-#     class Config:
-#         from_attributes = True
-
-# class User(BaseModel):
-#     id: int
-#     name: str
-#     is_active: bool
-#     stocks: list[Stock] = []
-
-#     class Config:
-#         from_attributes = True
-
-# class UserCreate(BaseModel):
-#     email: str
-#     password: str
+    @field_validator('name')
+    def validate_name(cls, value):
+        if not re.match('^(?!^[0-9@]+$)(?=.*[a-zA-Z])[a-zA-Z0-9@]+$', value):
+            raise ValueError('Invalid name')
+        return value
+    
+    @field_validator('email')
+    def validate_email(cls, value):
+        if not '@' in value:
+            raise ValueError('Invalid email')
+        return value
+    

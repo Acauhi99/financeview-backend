@@ -10,6 +10,12 @@ __pycache__/
 # C extensions
 *.so
 
+# SQLite
+test.db
+
+# ENV
+.env
+
 # Distribution / packaging
 .Python
 build/
