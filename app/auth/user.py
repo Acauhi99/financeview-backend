@@ -22,12 +22,20 @@ class UserUseCase:
             self.db.add(user_model)
             self.db.commit()
         except OperationalError:
+            self.db.rollback()
             raise HTTPException(
                 status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
                 detail='Database table not found'
             )
         except IntegrityError:
+            self.db.rollback()
             raise HTTPException(
                 status_code=status.HTTP_409_CONFLICT,
                 detail='User already exists'
+            )
+        except Exception as e:
+            self.db.rollback()
+            raise HTTPException(
+                status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+                detail=str(e)
             )
