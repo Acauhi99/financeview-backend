@@ -1,16 +1,14 @@
 from sqlalchemy.orm import Session
 from sqlalchemy.exc import IntegrityError, OperationalError
 from app.sql.models import User
-from app.sql.schemas import UserCreateDTO
+from app.sql.dtos import UserCreateDTO, UserLoginDTO
 from passlib.context import CryptContext
 from fastapi.exceptions import HTTPException
 from fastapi import status
-from passlib.context import CryptContext
 from jose import JWTError, jwt
 from datetime import datetime, timedelta
 
-
-crypt_context = CryptContext(schemes=['sha256_crypt'])
+crypt_context = CryptContext(schemes=['sha256_crypt'], deprecated='auto')
 SECRET_KEY = '4f1209a00f0d497b84ef1c5259e894cf4bf61c4065082f741815c9d4a72f9322'
 ALGORITHM = 'HS256'
 
@@ -18,7 +16,7 @@ class UserAuth:
     def __init__(self, db: Session):
         self.db = db
     
-    def create_user(self, user: UserCreateDTO):
+    def create_user(self, user: UserCreateDTO) -> None:
         user_model = User(
             name=user.name,
             email=user.email,
@@ -46,8 +44,8 @@ class UserAuth:
                 detail=str(e)
             )
         
-    def user_login(self, user: UserCreateDTO, expiration: int = 30):
-        user_exists = self.db.query(User).filter_by(email=user.email)
+    def user_login(self, user: UserLoginDTO, expiration: int = 30) -> dict:
+        user_exists = self.db.query(User).filter_by(email=user.email).first()
 
         if not user_exists:
             raise HTTPException(
@@ -61,7 +59,7 @@ class UserAuth:
                 detail='Email or password is incorrect'
             )
         
-        expiration_time = datetime.now() + timedelta(minutes=expiration)
+        expiration_time = datetime.utcnow() + timedelta(minutes=expiration)
 
         payload = {
             'sub': user.email,
@@ -69,4 +67,33 @@ class UserAuth:
         }
 
         token = jwt.encode(payload, SECRET_KEY, algorithm=ALGORITHM)
-        return token
+
+        return {
+            'access_token': token,
+            'token_type': 'bearer',
+            'expires_in': expiration_time.isoformat() 
+        }
+    
+    def verify_token(self, token: str) -> dict:
+        try:
+            payload = jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])
+        except JWTError:
+            raise HTTPException(
+                status_code=status.HTTP_401_UNAUTHORIZED,
+                detail='Invalid token'
+            )
+        except Exception as e:
+            raise HTTPException(
+                status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+                detail=str(e)
+            )
+        
+        user_exists = self.db.query(User).filter_by(email=payload['sub']).first()
+        
+        if not user_exists:
+            raise HTTPException(
+                status_code=status.HTTP_401_UNAUTHORIZED,
+                detail='User not found'
+            )
+        
+        return payload

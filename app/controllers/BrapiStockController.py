@@ -26,5 +26,5 @@ class BrapiStockController:
         return data
     
     @staticmethod
-    def __convert_timestamp_to_date_string(timestamp):
+    def __convert_timestamp_to_date_string(timestamp) -> str:
         return datetime.datetime.fromtimestamp(timestamp, tz=datetime.timezone.utc).strftime('%d/%m/%Y')

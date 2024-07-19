@@ -7,9 +7,9 @@ from app.controllers.BrapiStockController import BrapiStockController
 router = APIRouter(prefix='/stock', tags=['stock'])
 
 @router.get("")
-def get_stocks(db: Session = Depends(get_db)):
+def get_stocks(db: Session = Depends(get_db)) -> dict:
     return Crud(db).get_all_ative_stocks()
 
 @router.get("/{ticker}")
-def get_stock_info(ticker: str):
+def get_stock_info(ticker: str) -> dict:
     return BrapiStockController().get_stock_info(ticker)

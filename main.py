@@ -3,6 +3,7 @@ from contextlib import asynccontextmanager
 from fastapi.middleware.cors import CORSMiddleware
 from app.routes.stock_route import router as stock_router
 from app.routes.user_route import router as user_router
+from app.routes.test_route import router as test_router
 from apscheduler.schedulers.background import BackgroundScheduler
 from app.crons.ActiveStocksCronJob import ActiveStocksCronJob
 
@@ -49,3 +50,4 @@ def root():
 
 app.include_router(stock_router)
 app.include_router(user_router)
+app.include_router(test_router)

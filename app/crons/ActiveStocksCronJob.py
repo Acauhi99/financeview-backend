@@ -7,7 +7,7 @@ from app.sql.database import SessionLocal
 
 class ActiveStocksCronJob: 
     @staticmethod
-    def get_updated_stocks():
+    def get_updated_stocks() -> None:
         url = "https://brapi.dev/api/available"
         try:
             response = requests.get(url)
