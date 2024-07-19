@@ -9,7 +9,7 @@ router = APIRouter(prefix='/user', tags=['user'])
 
 @router.post("/register")
 def user_register(user: UserCreateDTO, db: Session = Depends(get_db)):
-    UserAuth(db).create(user)
+    UserAuth(db).create_user(user)
     return JSONResponse(
         status_code=status.HTTP_201_CREATED,
         content={"message": "User created"}
