@@ -18,8 +18,8 @@ origins = [
     "http://localhost:80",
     "https://gnxfpkdmjq.us-east-2.awsapprunner.com",
     "http://gnxfpkdmjq.us-east-2.awsapprunner.com",
-    "https://financeview-frontoffice.vercel.app/",
-    "http://financeview-frontoffice.vercel.app/"
+    "https://financeview-frontoffice.vercel.app",
+    "http://financeview-frontoffice.vercel.app"
 ]
 
 scheduler.add_job(ActiveStocksCronJob.get_updated_stocks, 'interval', minutes=43200)
@@ -39,10 +39,15 @@ app = FastAPI(lifespan=lifespan)
 app.add_middleware(
     CORSMiddleware,
     allow_origins=origins,
+    allow_origin_regex='https://.*\.vercel\.app',
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
 )
+
+@app.options("/{rest_of_path:path}")
+def preflight_handler():
+    return {}
 
 @app.get("/")
 def root():
