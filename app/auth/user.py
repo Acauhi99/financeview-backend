@@ -5,6 +5,9 @@ from app.sql.schemas import UserCreate
 from passlib.context import CryptContext
 from fastapi.exceptions import HTTPException
 from fastapi import status
+from passlib.context import CryptContext
+from jose import JWTError, jwt
+
 
 crypt_context = CryptContext(schemes=['sha256_crypt'])
 
@@ -39,3 +42,6 @@ class UserUseCase:
                 status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
                 detail=str(e)
             )
+        
+    def user_login(user: UserCreate, expiration: int):
+        pass
