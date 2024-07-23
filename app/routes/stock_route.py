@@ -2,7 +2,7 @@ from fastapi import APIRouter, Depends
 from sqlalchemy.orm import Session
 from app.sql.database import get_db
 from app.sql.crud import Crud
-from app.controllers.BrapiStockController import BrapiStockController
+from app.controllers.brapi_stocks_controller import BrapiStocksController
 
 router = APIRouter(prefix='/stock', tags=['stock'])
 
@@ -12,4 +12,4 @@ def get_stocks(db: Session = Depends(get_db)):
 
 @router.get("/{ticker}")
 def get_stock_info(ticker: str):
-    return BrapiStockController().get_stock_info(ticker)
+    return BrapiStocksController().get_stock_info(ticker)
