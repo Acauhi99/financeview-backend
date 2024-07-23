@@ -1,7 +1,7 @@
 import datetime
 import requests
 
-class BrapiStockController:
+class BrapiStocksController:
     def get_stocks(self) -> dict:
         url = "https://brapi.dev/api/available"
         response = requests.get(url)
