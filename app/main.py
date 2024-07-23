@@ -5,7 +5,7 @@ from app.routes.stock_route import router as stock_router
 from app.routes.user_route import router as user_router
 from app.routes.test_route import router as test_router
 from apscheduler.schedulers.background import BackgroundScheduler
-from app.crons.ActiveStocksCronJob import ActiveStocksCronJob
+from app.crons.active_stocks_cron_job import ActiveStocksCronJob
 
 scheduler = BackgroundScheduler()
 
@@ -16,8 +16,6 @@ origins = [
     "http://localhost:8000",
     "https://localhost:80",
     "http://localhost:80",
-    "https://gnxfpkdmjq.us-east-2.awsapprunner.com",
-    "http://gnxfpkdmjq.us-east-2.awsapprunner.com",
     "https://financeview-frontoffice.vercel.app",
     "http://financeview-frontoffice.vercel.app"
 ]
@@ -39,7 +37,6 @@ app = FastAPI(lifespan=lifespan)
 app.add_middleware(
     CORSMiddleware,
     allow_origins=origins,
-    allow_origin_regex='http://.*\.vercel\.app',
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
