@@ -59,7 +59,7 @@ class UserAuth:
                 detail='Email or password is incorrect'
             )
         
-        expiration_time = datetime.utcnow() + timedelta(minutes=expiration)
+        expiration_time = datetime.now() + timedelta(minutes=expiration)
 
         payload = {
             'sub': user.email,
