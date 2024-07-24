@@ -13,6 +13,9 @@ __pycache__/
 # SQLite
 test.db
 
+# Dependency directories
+pyproject.toml
+
 # ENV
 .env
 

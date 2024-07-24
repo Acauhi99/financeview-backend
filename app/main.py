@@ -3,7 +3,6 @@ from contextlib import asynccontextmanager
 from fastapi.middleware.cors import CORSMiddleware
 from app.routes.stock_route import router as stock_router
 from app.routes.user_route import router as user_router
-from app.routes.test_route import router as test_router
 from apscheduler.schedulers.background import BackgroundScheduler
 from app.crons.active_stocks_cron_job import ActiveStocksCronJob
 
@@ -24,12 +23,10 @@ scheduler.add_job(ActiveStocksCronJob.get_updated_stocks, 'interval', minutes=43
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
-    print("Startup")
     if not scheduler.running:
         scheduler.start()
     ActiveStocksCronJob.get_updated_stocks()
     yield
-    print("Shutdown")
     scheduler.shutdown()
 
 app = FastAPI(lifespan=lifespan)
@@ -52,4 +49,3 @@ def root():
 
 app.include_router(stock_router)
 app.include_router(user_router)
-app.include_router(test_router)
