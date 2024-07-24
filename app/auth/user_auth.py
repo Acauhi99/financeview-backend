@@ -8,19 +8,18 @@ from fastapi import status
 from jose import JWTError, jwt
 from datetime import datetime, timedelta
 
-crypt_context = CryptContext(schemes=['sha256_crypt'], deprecated='auto')
-SECRET_KEY = '4f1209a00f0d497b84ef1c5259e894cf4bf61c4065082f741815c9d4a72f9322'
-ALGORITHM = 'HS256'
-
 class UserAuth:
     def __init__(self, db: Session):
+        self.crypt_context = CryptContext(schemes=['sha256_crypt'], deprecated='auto')
+        self.SECRET_KEY = '4f1209a00f0d497b84ef1c5259e894cf4bf61c4065082f741815c9d4a72f9322'
+        self.ALGORITHM = 'HS256'
         self.db = db
     
     def create_user(self, user: UserCreateDTO) -> None:
         user_model = User(
             name=user.name,
             email=user.email,
-            hashed_password=crypt_context.hash(user.password)
+            hashed_password=self.crypt_context.hash(user.password)
         )
         try:
             self.db.add(user_model)
@@ -53,7 +52,7 @@ class UserAuth:
                 detail='Email or password is incorrect'
             )
         
-        if not crypt_context.verify(user.password, user_exists.hashed_password):
+        if not self.crypt_context.verify(user.password, user_exists.hashed_password):
             raise HTTPException(
                 status_code=status.HTTP_401_UNAUTHORIZED,
                 detail='Email or password is incorrect'
@@ -63,11 +62,10 @@ class UserAuth:
 
         payload = {
             'sub': user.email,
-            'exp': expiration_time
+            'exp': expiration_time.timestamp()
         }
 
-        token = jwt.encode(payload, SECRET_KEY, algorithm=ALGORITHM)
-
+        token = jwt.encode(payload, self.SECRET_KEY, algorithm=self.ALGORITHM)
         return {
             'access_token': token,
             'expires_in': expiration_time.isoformat(),
@@ -81,7 +79,7 @@ class UserAuth:
     
     def verify_token(self, token: str) -> dict:
         try:
-            payload = jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])
+            payload = jwt.decode(token, self.SECRET_KEY, algorithms=[self.ALGORITHM])
         except JWTError:
             raise HTTPException(
                 status_code=status.HTTP_401_UNAUTHORIZED,
@@ -93,9 +91,10 @@ class UserAuth:
                 detail=str(e)
             )
         
-        user_exists = self.db.query(User).filter_by(email=payload['sub']).first()
+        user_exists = self.db.query(User).filter_by(email=payload.get('sub')).first()
         
         if not user_exists:
+            print("User not found")
             raise HTTPException(
                 status_code=status.HTTP_401_UNAUTHORIZED,
                 detail='User not found'
