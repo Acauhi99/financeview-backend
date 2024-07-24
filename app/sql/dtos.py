@@ -1,4 +1,5 @@
 import re
+from typing import Optional
 from pydantic import BaseModel, field_validator
 
 class UserCreateDTO(BaseModel):
@@ -54,6 +55,6 @@ class FeedbackCreateDTO(BaseModel):
     
 class FeedbackReadDTO(BaseModel):
     user_name: str
-    url_img_user: str | None
+    url_img_user: Optional[str]  
     rating: float
     description: str
