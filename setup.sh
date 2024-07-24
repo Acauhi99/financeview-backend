@@ -1,8 +1,10 @@
+#!/bin/bash
 set -e
 
 echo "Starting setup script"
 
 echo "Installing dependencies..."
+pip install --upgrade pip
 pip install -r requirements.txt || { echo "Failed to install dependencies"; exit 1; }
 
 echo "Running alembic migrations..."
