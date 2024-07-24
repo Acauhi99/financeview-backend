@@ -70,8 +70,13 @@ class UserAuth:
 
         return {
             'access_token': token,
-            'token_type': 'bearer',
-            'expires_in': expiration_time.isoformat() 
+            'expires_in': expiration_time.isoformat(),
+            'user_data': {
+                'name': user_exists.name,
+                'email': user_exists.email,
+                'user_id': user_exists.id,
+                'user_url_image': user_exists.url_image
+            }
         }
     
     def verify_token(self, token: str) -> dict:
