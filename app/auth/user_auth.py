@@ -92,9 +92,7 @@ class UserAuth:
             )
         
         user_exists = self.db.query(User).filter_by(email=payload.get('sub')).first()
-        
         if not user_exists:
-            print("User not found")
             raise HTTPException(
                 status_code=status.HTTP_401_UNAUTHORIZED,
                 detail='User not found'

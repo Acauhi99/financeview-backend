@@ -19,8 +19,12 @@ def user_register(user: UserCreateDTO, db: Session = Depends(get_db)):
 
 @router.post("/login")
 def user_login(form_data: OAuth2PasswordRequestForm = Depends(), db: Session = Depends(get_db)):
-    user = UserLoginDTO(email=form_data.username, password=form_data.password)
+    user = UserLoginDTO(
+        email=form_data.username, 
+        password=form_data.password)
+    
     token_data = UserAuth(db).user_login(user)
+
     return {
         "message": "User logged in successfully",
         "status_code": status.HTTP_200_OK,
