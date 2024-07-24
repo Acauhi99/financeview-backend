@@ -10,8 +10,8 @@ __pycache__/
 # C extensions
 *.so
 
-# SQLite
-test.db
+# DataBase files
+*.db
 
 # Dependency directories
 pyproject.toml
