@@ -1,5 +1,11 @@
 set -e
 
-pip install -r requirements.txt
+echo "Starting setup script"
 
-alembic upgrade head
+echo "Installing dependencies..."
+pip install -r requirements.txt || { echo "Failed to install dependencies"; exit 1; }
+
+echo "Running alembic migrations..."
+alembic upgrade head || { echo "Failed to run alembic migrations"; exit 1; }
+
+echo "Setup script completed successfully"
