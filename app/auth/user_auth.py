@@ -61,20 +61,17 @@ class UserAuth:
         expiration_time = datetime.now() + timedelta(minutes=expiration)
 
         payload = {
-            'sub': user.email,
-            'exp': expiration_time.timestamp()
+            'name': user_exists.name,
+            'email': user_exists.email,
+            'user_id': user_exists.id,
+            'user_url_image': user_exists.url_image
         }
 
         token = jwt.encode(payload, self.SECRET_KEY, algorithm=self.ALGORITHM)
         return {
             'access_token': token,
-            'expires_in': expiration_time.isoformat(),
-            'user_data': {
-                'name': user_exists.name,
-                'email': user_exists.email,
-                'user_id': user_exists.id,
-                'user_url_image': user_exists.url_image
-            }
+            'token_type': 'bearer',
+            'exp': expiration_time.isoformat()
         }
     
     def verify_token(self, token: str) -> dict:
@@ -91,7 +88,7 @@ class UserAuth:
                 detail=str(e)
             )
         
-        user_exists = self.db.query(User).filter_by(email=payload.get('sub')).first()
+        user_exists = self.db.query(User).filter_by(email=payload.get('email')).first()
         if not user_exists:
             raise HTTPException(
                 status_code=status.HTTP_401_UNAUTHORIZED,

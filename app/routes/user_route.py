@@ -25,11 +25,7 @@ def user_login(form_data: OAuth2PasswordRequestForm = Depends(), db: Session = D
     
     token_data = UserAuth(db).user_login(user)
 
-    return {
-        "message": "User logged in successfully",
-        "status_code": status.HTTP_200_OK,
-        "data": token_data
-    }
+    return token_data
 
 @router.post("/feedback", dependencies=[Depends(token_verify)])
 def user_feedback(feedback: FeedbackCreateDTO, db: Session = Depends(get_db)):   
