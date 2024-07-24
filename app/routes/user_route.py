@@ -3,6 +3,7 @@ from sqlalchemy.orm import Session
 from app.controllers.feedback_controller import FeedbackAuth
 from app.sql.database import get_db
 from app.auth.user_auth import UserAuth
+from app.auth.verifier_auth import token_verify
 from app.sql.dtos import *
 from fastapi.security import OAuth2PasswordRequestForm
 
@@ -26,7 +27,7 @@ def user_login(form_data: OAuth2PasswordRequestForm = Depends(), db: Session = D
         "data": token_data
     }
 
-@router.post("/feedback")
+@router.post("/feedback", dependencies=[Depends(token_verify)])
 def user_feedback(feedback: FeedbackCreateDTO, db: Session = Depends(get_db)):   
     return FeedbackAuth(db).create_feedback(feedback)
 
