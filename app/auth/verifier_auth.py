@@ -1,6 +1,6 @@
 from fastapi.security import OAuth2PasswordBearer
 from fastapi import Depends, HTTPException, status
-from app.auth.user_auth import UserAuth
+from app.auth.token_auth import TokenAuth
 from sqlalchemy.orm import Session
 from app.sql.database import get_db
 
@@ -12,4 +12,4 @@ def token_verify(db: Session = Depends(get_db), token: str = Depends(oauth2_sche
             status_code=status.HTTP_401_UNAUTHORIZED,
             detail="Token is missing or undefined"
         )
-    return UserAuth(db).verify_token(token)
+    return TokenAuth(db).verify_token(token)
