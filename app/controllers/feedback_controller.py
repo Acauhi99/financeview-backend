@@ -9,7 +9,7 @@ from fastapi.exceptions import HTTPException
 from fastapi import status
 from sqlalchemy.orm import joinedload
 
-class FeedbackAuth:
+class FeedbackController:
     def __init__(self, db: Session):
         self.db = db
 
