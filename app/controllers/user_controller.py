@@ -96,10 +96,7 @@ class UserController:
                 detail=str(e)
             )
         
-        return {
-            'message': 'User updated',
-            'status_code': status.HTTP_200_OK
-        }
+        return self.token_create(user_exists)
     
     def desactive_user(self, user_id: int) -> dict:
         user_exists = self.db.query(User).filter_by(id=user_id).first()
