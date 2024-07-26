@@ -1,11 +1,13 @@
 from fastapi import APIRouter, Depends, status
+from fastapi.security import OAuth2PasswordRequestForm
 from sqlalchemy.orm import Session
+
+from app.auth.verifier_auth import token_verify
 from app.controllers.feedback_controller import FeedbackController
 from app.controllers.user_controller import UserController
 from app.sql.database import get_db
-from app.auth.verifier_auth import token_verify
 from app.sql.dtos import *
-from fastapi.security import OAuth2PasswordRequestForm
+
 
 router = APIRouter(prefix='/user', tags=['user'])
 
@@ -43,10 +45,4 @@ def user_feedback(feedback: FeedbackCreateDTO,
 
 @router.get("/feedback")
 def get_user_feedback(db: Session = Depends(get_db)):
-    feedback_list = FeedbackController(db).get_feedback()
-    return {
-        "message": "Feedback retrieved successfully",
-        "status_code": status.HTTP_200_OK,
-        "data": feedback_list
-    }
-    
+    return FeedbackController(db).get_feedback()

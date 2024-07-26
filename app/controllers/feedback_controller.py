@@ -1,13 +1,13 @@
 from typing import List
-from sqlalchemy import func
-from sqlalchemy.orm import Session
-from sqlalchemy.exc import OperationalError, IntegrityError
-from app.sql.models import Feedback, User
-from app.sql.dtos import FeedbackCreateDTO, FeedbackReadDTO
-from fastapi.exceptions import HTTPException
 
 from fastapi import status
-from sqlalchemy.orm import joinedload
+from fastapi.exceptions import HTTPException
+from sqlalchemy import func
+from sqlalchemy.exc import OperationalError, IntegrityError
+from sqlalchemy.orm import Session, joinedload
+
+from app.sql.models import Feedback, User
+from app.sql.dtos import FeedbackCreateDTO, FeedbackReadDTO
 
 class FeedbackController:
     def __init__(self, db: Session):
@@ -57,7 +57,7 @@ class FeedbackController:
                 detail=str(e)
             )
 
-    def get_feedback(self) -> List[FeedbackReadDTO]:
+    def get_feedback(self) -> dict:
         subquery = (
             self.db.query(
                 Feedback.user_id,
@@ -87,4 +87,8 @@ class FeedbackController:
             )
             result.append(feedback_read)
 
-        return result
+        return {
+            "message": "Feedback retrieved successfully",
+            "status_code": status.HTTP_200_OK,
+            "data": result
+        }

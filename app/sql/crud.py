@@ -1,5 +1,7 @@
 from sqlalchemy import inspect
+
 from .models import ActiveStocks
+
 
 class Crud:
     def __init__(self, db_session=None):

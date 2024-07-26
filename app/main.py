@@ -1,10 +1,13 @@
-from fastapi import FastAPI
 from contextlib import asynccontextmanager
+
+from apscheduler.schedulers.background import BackgroundScheduler
+from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
+
 from app.routes.stock_route import router as stock_router
 from app.routes.user_route import router as user_router
-from apscheduler.schedulers.background import BackgroundScheduler
 from app.crons.active_stocks_cron_job import ActiveStocksCronJob
+
 
 scheduler = BackgroundScheduler()
 

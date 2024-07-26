@@ -1,11 +1,12 @@
-from sqlalchemy.orm import Session
+from fastapi import status
+from fastapi.exceptions import HTTPException
 from sqlalchemy.exc import IntegrityError, OperationalError
+from sqlalchemy.orm import Session
+
 from app.auth.token_auth import TokenAuth
 from app.sql.models import User
 from app.sql.dtos import UserCreateDTO, UserLoginDTO, UserUpdateDTO
-from fastapi.exceptions import HTTPException
-from fastapi import status
-from app.auth.token_auth import TokenAuth
+
 
 class UserController:
     def __init__(self, db: Session):

@@ -1,8 +1,10 @@
 from fastapi import APIRouter, Depends
 from sqlalchemy.orm import Session
+
 from app.sql.database import get_db
 from app.sql.crud import Crud
 from app.controllers.brapi_stocks_controller import BrapiStocksController
+
 
 router = APIRouter(prefix='/stock', tags=['stock'])
 

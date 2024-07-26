@@ -5,6 +5,7 @@ class BrapiStocksController:
     def get_stocks(self) -> dict:
         url = "https://brapi.dev/api/available"
         response = requests.get(url)
+        response.raise_for_status()
         return response.json()
 
     def get_stock_info(self, ticker: str) -> dict:
@@ -15,7 +16,7 @@ class BrapiStocksController:
             'fundamental': 'true'
         }
         response = requests.get(url, params=params)
-        
+        response.raise_for_status()
         return self.__filtered_data(response.json())
     
     def __filtered_data(self, data: dict) -> dict:
@@ -26,5 +27,5 @@ class BrapiStocksController:
         return data
     
     @staticmethod
-    def __convert_timestamp_to_date_string(timestamp) -> str:
+    def __convert_timestamp_to_date_string(timestamp: int) -> str:
         return datetime.datetime.fromtimestamp(timestamp, tz=datetime.timezone.utc).strftime('%d/%m/%Y')

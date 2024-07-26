@@ -1,9 +1,10 @@
 import requests
-from requests.exceptions import RequestException
-from app.sql.crud import Crud
-from requests.exceptions import JSONDecodeError
+from requests.exceptions import JSONDecodeError, RequestException
 from sqlalchemy.exc import SQLAlchemyError
+
+from app.sql.crud import Crud
 from app.sql.database import SessionLocal
+
 
 class ActiveStocksCronJob: 
     @staticmethod

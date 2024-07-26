@@ -1,10 +1,12 @@
-from sqlalchemy.orm import Session
-from app.sql.models import User
-from passlib.context import CryptContext
-from fastapi.exceptions import HTTPException
-from fastapi import status
-from jose import JWTError, jwt
 from datetime import datetime, timedelta
+
+from fastapi import status
+from fastapi.exceptions import HTTPException
+from jose import JWTError, jwt
+from passlib.context import CryptContext
+from sqlalchemy.orm import Session
+
+from app.sql.models import User
 
 class TokenAuth:
     def __init__(self, db: Session):
@@ -13,7 +15,7 @@ class TokenAuth:
         self.ALGORITHM = 'HS256'
         self.db = db
     
-    def token_create(self, user: User, expiration = 30) -> dict:
+    def token_create(self, user: User, expiration: int = 30) -> dict:
         expiration_time = datetime.now() + timedelta(minutes=expiration)
 
         payload = {
