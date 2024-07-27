@@ -69,6 +69,18 @@ class UserController:
             )
         
         return self.token_create(user_exists)
+    
+    def get_user_image(self, user_id: int) -> dict:
+        user_exists = self.db.query(User).filter_by(id=user_id).first()
+        if not user_exists:
+            raise HTTPException(
+                status_code=status.HTTP_404_NOT_FOUND,
+                detail='User not found'
+            )
+        
+        return {
+            'url_image': user_exists.url_image
+        }
 
     def update_user(self, user_id: int, user: UserUpdateDTO) -> dict:
         user_exists = self.db.query(User).filter_by(id=user_id).first()

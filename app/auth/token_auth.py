@@ -19,10 +19,9 @@ class TokenAuth:
         expiration_time = datetime.now() + timedelta(minutes=expiration)
 
         payload = {
+            'user_id': user.id,
             'name': user.name,
             'email': user.email,
-            'user_id': user.id,
-            'user_url_image': user.url_image
         }
 
         token = jwt.encode(payload, self.SECRET_KEY, algorithm=self.ALGORITHM)

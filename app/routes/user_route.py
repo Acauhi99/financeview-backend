@@ -22,6 +22,11 @@ def user_login(form_data: OAuth2PasswordRequestForm = Depends(),
     user = UserLoginDTO(email=form_data.username, password=form_data.password)
     return UserController(db).user_login(user)
 
+@router.get("/image/{user_id}", dependencies=[Depends(token_verify)])
+def user_image(user_id: int, 
+               db: Session = Depends(get_db)):
+    return UserController(db).get_user_image(user_id)
+
 @router.put("/update/{user_id}", dependencies=[Depends(token_verify)])
 def user_update(user_id: int, 
                 user: UserUpdateDTO, 
