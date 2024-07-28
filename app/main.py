@@ -18,8 +18,8 @@ origins = [
     "http://localhost:8080",
     "https://localhost:80",
     "http://localhost:80",
-    "https://financeview-frontoffice.vercel.app",
-    "http://financeview-frontoffice.vercel.app"
+    "https://financeview.vercel.app",
+    "http://financeview.vercel.app"
 ]
 
 scheduler.add_job(ActiveStocksCronJob.get_updated_stocks, 'interval', minutes=43200)
