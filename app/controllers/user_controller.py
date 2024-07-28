@@ -4,8 +4,8 @@ from sqlalchemy.exc import IntegrityError, OperationalError
 from sqlalchemy.orm import Session
 
 from app.auth.token_auth import TokenAuth
-from app.sql.models import User
-from app.sql.dtos import UserCreateDTO, UserLoginDTO, UserUpdateDTO
+from app.sql.models import ActiveStocks, User, UserFavoriteStocks
+from app.sql.dtos import UserCreateDTO, UserFavoriteStocksCreateDTO, UserLoginDTO, UserUpdateDTO
 
 
 class UserController:
@@ -79,7 +79,8 @@ class UserController:
             )
         
         return {
-            'url_image': user_exists.url_image
+            'url_image': user_exists.url_image,
+            'status_code': status.HTTP_200_OK
         }
 
     def update_user(self, user_id: int, user: UserUpdateDTO) -> dict:
@@ -136,3 +137,82 @@ class UserController:
         user_exists.is_active = True
         self.db.commit()
         return self.token_create(user_exists)
+    
+    def get_user_favorites_stocks(self, user_id: int) -> dict:
+        user_exists = self.db.query(User).filter_by(id=user_id).first()
+        if not user_exists:
+            raise HTTPException(
+                status_code=status.HTTP_404_NOT_FOUND,
+                detail='User not found'
+            )
+        
+        favorites = self.db.query(UserFavoriteStocks).filter_by(user_id=user_id).all()
+
+        return {
+            'favorites': [favorite.stock_ticker for favorite in favorites],
+            'status_code': status.HTTP_200_OK
+        }
+    
+    def create_user_favorite_stock(self, user_favorite_dto: UserFavoriteStocksCreateDTO) -> dict:
+        user_exists = self.db.query(User).filter_by(id=user_favorite_dto.user_id).first()
+        if not user_exists:
+            raise HTTPException(
+                status_code=status.HTTP_404_NOT_FOUND,
+                detail='User not found'
+            )
+        
+        stock_exists = self.db.query(ActiveStocks).filter_by(ticker=user_favorite_dto.stock_ticker).first()
+        if not stock_exists:
+            raise HTTPException(
+                status_code=status.HTTP_404_NOT_FOUND,
+                detail='Stock ticker not found'
+            )
+        
+        stock_already_favorite = self.db.query(UserFavoriteStocks).filter_by(
+            user_id=user_favorite_dto.user_id,
+            stock_ticker=user_favorite_dto.stock_ticker
+        ).first()
+
+        if stock_already_favorite:
+            raise HTTPException(
+                status_code=status.HTTP_409_CONFLICT,
+                detail='Stock already exists in favorites'
+            )
+        
+        user_favorite = UserFavoriteStocks(
+            user_id=user_favorite_dto.user_id,
+            stock_ticker=user_favorite_dto.stock_ticker
+        )
+
+        self.db.add(user_favorite)
+        self.db.commit()
+        return {
+            'message': 'Stock added to favorites successfully',
+            'status_code': status.HTTP_201_CREATED
+        }
+    
+    def delete_user_favorite_stock(self, user_favorite_dto: UserFavoriteStocksCreateDTO) -> dict:
+        user_exists = self.db.query(User).filter_by(id=user_favorite_dto.user_id).first()
+        if not user_exists:
+            raise HTTPException(
+                status_code=status.HTTP_404_NOT_FOUND,
+                detail='User not found'
+            )
+        
+        stock_already_favorite = self.db.query(UserFavoriteStocks).filter_by(
+            user_id=user_favorite_dto.user_id,
+            stock_ticker=user_favorite_dto.stock_ticker
+        ).first()
+
+        if not stock_already_favorite:
+            raise HTTPException(
+                status_code=status.HTTP_404_NOT_FOUND,
+                detail='Stock not found in favorites'
+            )
+        
+        self.db.delete(stock_already_favorite)
+        self.db.commit()
+        return {
+            'message': 'Stock removed from favorites successfully',
+            'status_code': status.HTTP_204_NO_CONTENT
+        }

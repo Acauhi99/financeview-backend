@@ -45,6 +45,16 @@ class UserUpdateDTO(BaseModel):
         if not '@' in value:
             raise ValueError('Invalid email')
         return value
+    
+class UserFavoriteStocksCreateDTO(BaseModel):
+    user_id: int
+    stock_ticker: str
+    
+    @field_validator('user_id')
+    def validate_user_id(cls, value) -> int:
+        if value < 1:
+            raise ValueError('Invalid user id')
+        return value
 
 
 class FeedbackCreateDTO(BaseModel):

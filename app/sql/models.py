@@ -32,3 +32,13 @@ class Feedback(Base):
     user_id = Column(Integer, ForeignKey('users.id'), nullable=False)
 
     user = relationship("User", lazy=True)
+
+class UserFavoriteStocks(Base):
+    __tablename__ = "user_favorite_stocks"
+
+    id = Column(Integer, primary_key=True, index=True)
+    user_id = Column(Integer, ForeignKey('users.id'), nullable=False)
+    stock_ticker = Column(String, ForeignKey('active_stocks.ticker'), nullable=False)
+
+    user = relationship("User", lazy=True)
+    stock = relationship("ActiveStocks", lazy=True)

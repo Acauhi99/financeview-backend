@@ -43,6 +43,21 @@ def user_reactive(user_email: str,
                   db: Session = Depends(get_db)):
     return UserController(db).reactive_user(user_email)
 
+@router.get("/favorites/{user_id}", dependencies=[Depends(token_verify)])
+def user_favorites_stocks(user_id: int, 
+                   db: Session = Depends(get_db)):
+    return UserController(db).get_user_favorites_stocks(user_id)
+
+@router.post("/favorites", dependencies=[Depends(token_verify)])
+def create_user_favorites_stock(user_favorite: UserFavoriteStocksCreateDTO, 
+                   db: Session = Depends(get_db)):
+    return UserController(db).create_user_favorite_stock(user_favorite)
+
+@router.delete("/favorites", dependencies=[Depends(token_verify)])
+def unfavorite_a_stock(user_favorite: UserFavoriteStocksCreateDTO, 
+                   db: Session = Depends(get_db)):
+    return UserController(db).delete_user_favorite_stock(user_favorite)
+
 @router.post("/feedback", dependencies=[Depends(token_verify)])
 def user_feedback(feedback: FeedbackCreateDTO, 
                   db: Session = Depends(get_db)):   
