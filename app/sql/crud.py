@@ -17,7 +17,9 @@ class Crud:
         self.db_session.bulk_save_objects(active_stocks_objects)
         self.db_session.commit()
 
-        return {"message": "Active stocks updated"}
+        return {
+            "message": "Active stocks updated"
+        }
 
     def get_all_ative_stocks(self) -> dict:
         return self.db_session.query(ActiveStocks).all()

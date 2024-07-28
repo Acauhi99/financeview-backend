@@ -29,7 +29,8 @@ class TokenAuth:
         return {
             'access_token': token,
             'token_type': 'bearer',
-            'exp': expiration_time.isoformat()
+            'exp': expiration_time.isoformat(),
+            'status_code': status.HTTP_200_OK
         }
     
     def verify_token(self, token: str) -> dict:
