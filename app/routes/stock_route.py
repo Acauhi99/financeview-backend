@@ -12,6 +12,7 @@ router = APIRouter(prefix='/stock', tags=['stock'])
 def get_stocks(db: Session = Depends(get_db)):
     return Crud(db).get_all_ative_stocks()
 
-@router.get("/{ticker}")
-def get_stock_info(ticker: str):
-    return BrapiStocksController().get_stock_info(ticker)
+@router.get("/{ticker}/{time_range}")
+def get_stock_info(ticker: str, 
+                   time_range: str):
+    return BrapiStocksController().get_stock_info(ticker, time_range)
