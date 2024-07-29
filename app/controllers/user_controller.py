@@ -4,8 +4,8 @@ from sqlalchemy.exc import IntegrityError, OperationalError
 from sqlalchemy.orm import Session
 
 from app.auth.token_auth import TokenAuth
-from app.sql.models import ActiveStocks, User, UserFavoriteStocks
-from app.sql.dtos import UserCreateDTO, UserFavoriteStocksCreateDTO, UserLoginDTO, UserUpdateDTO
+from app.db.models import ActiveStocks, User, UserFavoriteStocks
+from app.dtos.user_dtos import UserCreateDTO, UserLoginDTO, UserUpdateDTO, UserFavoriteStocksCreateDTO
 
 
 class UserController:
@@ -43,8 +43,7 @@ class UserController:
             )
         
         return {
-            "message": "User created successfully",
-            "status_code": status.HTTP_201_CREATED
+            "message": "User created successfully"
         }
         
     def user_login(self, user: UserLoginDTO) -> dict:
@@ -79,8 +78,7 @@ class UserController:
             )
         
         return {
-            'url_image': user_exists.url_image,
-            'status_code': status.HTTP_200_OK
+            'url_image': user_exists.url_image
         }
 
     def update_user(self, user_id: int, user: UserUpdateDTO) -> dict:
@@ -119,11 +117,17 @@ class UserController:
                 detail='User not found'
             )
         
+        user_already_desactive = self.db.query(User).filter_by(id=user_id, is_active=False).first()
+        if user_already_desactive:
+            raise HTTPException(
+                status_code=status.HTTP_409_CONFLICT,
+                detail='User already desactive'
+            )
+        
         user_exists.is_active = False
         self.db.commit()
         return {
-            'message': 'User desactive successfully',
-            'status_code': status.HTTP_204_NO_CONTENT
+            'message': 'User desactive successfully'
         }
     
     def reactive_user(self, user_email: str) -> dict:
@@ -132,6 +136,13 @@ class UserController:
             raise HTTPException(
                 status_code=status.HTTP_404_NOT_FOUND,
                 detail='User not found'
+            )
+        
+        user_already_active = self.db.query(User).filter_by(email=user_email, is_active=True).first()
+        if user_already_active:
+            raise HTTPException(
+                status_code=status.HTTP_409_CONFLICT,
+                detail='User already active'
             )
         
         user_exists.is_active = True
@@ -149,8 +160,7 @@ class UserController:
         favorites = self.db.query(UserFavoriteStocks).filter_by(user_id=user_id).all()
 
         return {
-            'favorites': [favorite.stock_ticker for favorite in favorites],
-            'status_code': status.HTTP_200_OK
+            'favorites': [favorite.stock_ticker for favorite in favorites]
         }
     
     def create_user_favorite_stock(self, user_favorite_dto: UserFavoriteStocksCreateDTO) -> dict:
@@ -187,8 +197,7 @@ class UserController:
         self.db.add(user_favorite)
         self.db.commit()
         return {
-            'message': 'Stock added to favorites successfully',
-            'status_code': status.HTTP_201_CREATED
+            'message': 'Stock added to favorites successfully'
         }
     
     def delete_user_favorite_stock(self, user_favorite_dto: UserFavoriteStocksCreateDTO) -> dict:
@@ -213,6 +222,5 @@ class UserController:
         self.db.delete(stock_already_favorite)
         self.db.commit()
         return {
-            'message': 'Stock removed from favorites successfully',
-            'status_code': status.HTTP_204_NO_CONTENT
+            'message': 'Stock removed from favorites successfully'
         }

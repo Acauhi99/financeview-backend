@@ -1,4 +1,7 @@
+from typing import List
 from sqlalchemy import inspect
+
+from app.dtos.response_dtos import ResponseStocksDTO
 
 from .models import ActiveStocks
 
@@ -21,5 +24,6 @@ class Crud:
             "message": "Active stocks updated"
         }
 
-    def get_all_ative_stocks(self) -> dict:
-        return self.db_session.query(ActiveStocks).all()
+    def get_all_ative_stocks(self) -> List[ResponseStocksDTO]:
+        stocks = self.db_session.query(ActiveStocks).all()
+        return [ResponseStocksDTO(id=stock.id, ticker=stock.ticker) for stock in stocks]

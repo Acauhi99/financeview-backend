@@ -6,7 +6,7 @@ from jose import JWTError, jwt
 from passlib.context import CryptContext
 from sqlalchemy.orm import Session
 
-from app.sql.models import User
+from app.db.models import User
 
 class TokenAuth:
     def __init__(self, db: Session):
@@ -29,11 +29,16 @@ class TokenAuth:
         return {
             'access_token': token,
             'token_type': 'bearer',
-            'exp': expiration_time.isoformat(),
-            'status_code': status.HTTP_200_OK
+            'exp': expiration_time.isoformat()
         }
     
     def verify_token(self, token: str) -> dict:
+        if not token or token == "undefined":
+            raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="Token is missing or undefined"
+        )
+        
         try:
             payload = jwt.decode(token, self.SECRET_KEY, algorithms=[self.ALGORITHM])
         except JWTError:

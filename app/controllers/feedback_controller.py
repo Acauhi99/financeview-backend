@@ -1,13 +1,11 @@
-from typing import List
-
 from fastapi import status
 from fastapi.exceptions import HTTPException
 from sqlalchemy import func
 from sqlalchemy.exc import OperationalError, IntegrityError
 from sqlalchemy.orm import Session, joinedload
 
-from app.sql.models import Feedback, User
-from app.sql.dtos import FeedbackCreateDTO, FeedbackReadDTO
+from app.db.models import Feedback, User
+from app.dtos.feedback_dtos import FeedbackCreateDTO, FeedbackReadDTO
 
 class FeedbackController:
     def __init__(self, db: Session):
@@ -35,8 +33,7 @@ class FeedbackController:
             self.db.commit()
             self.db.refresh(feedback_instance)
             return {
-                "message": "Feedback created successfully",
-                "status_code": status.HTTP_201_CREATED,
+                "message": "Feedback created successfully"
             }
         except OperationalError:
             self.db.rollback()
@@ -89,6 +86,5 @@ class FeedbackController:
 
         return {
             "message": "Feedback retrieved successfully",
-            "status_code": status.HTTP_200_OK,
             "data": result
         }
