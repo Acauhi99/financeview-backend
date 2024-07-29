@@ -8,8 +8,8 @@ from alembic import context
 # Adicione o caminho do diretório raiz do projeto
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 
-from app.sql.models import Base
-from app.sql.database import SQLALCHEMY_DATABASE_URL
+from app.db.models import Base
+from app.db.database import SQLALCHEMY_DATABASE_URL
 
 # Configuração do logging
 config = context.config
