@@ -34,6 +34,7 @@ class StockDataDTO(BaseModel):
     symbol: str
     usedInterval: str
     usedRange: str
+    logourl: str
     historicalDataPrice: List[HistoricalStockDataPriceDTO]
     validRanges: List[str]
 
