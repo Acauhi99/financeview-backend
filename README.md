@@ -17,7 +17,7 @@
 - [@Acauhi99](https://github.com/Acauhi99)
 
 
-## Documentação da Cotacao de Acoes
+## Documentação da Cotação de Acoes
 
 [Brapi](https://brapi.dev/docs)
 
